@@ -1,0 +1,6 @@
+# Car Inventory Management System
+# Python Standard Library Only (No external dependencies for CLI version)
+
+# For future web application (Phase 2):
+# flask==3.0.0
+# flask-wtf==1.2.1
