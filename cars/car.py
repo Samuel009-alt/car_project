@@ -18,6 +18,10 @@ class Car:
         from datetime import datetime
         current_year = datetime.now().year
         return current_year - self.year 
+    
+    def is_vintage(self):
+        # Check if car is vintage (25+ years old)
+        return self.get_age() >= 25
 
 
 # Test our Car class
