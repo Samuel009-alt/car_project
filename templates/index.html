@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<style>
+    h2 {
+        color: #667eea;
+        margin-bottom: 20px;
+        font-size: 2em;
+    }
+    
+    .car-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .car-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+        border-radius: 10px;
+        color: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        transition: transform 0.3s;
+    }
+    
+    .car-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    .car-brand {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .car-model {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+        opacity: 0.9;
+    }
+    
+    .car-details {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255,255,255,0.3);
+    }
+    
+    .car-year, .car-price {
+        font-size: 1.1em;
+        margin: 5px 0;
+    }
+    
+    .car-id {
+        font-size: 0.9em;
+        opacity: 0.7;
+        margin-top: 10px;
+    }
+    
+    .delete-btn {
+        display: block;
+        margin-top: 15px;
+        padding: 10px;
+        background: rgba(255,255,255,0.2);
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: 600;
+        transition: background 0.3s;
+    }
+
+    .delete-btn:hover {
+        background: rgba(255, 0, 0, 0.8);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+    }
+    
+    .empty-state h3 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+</style>
+
+<h2>All Cars in Inventory</h2>
+
+{% if cars %}
+    <div class="car-grid">
+        {% for car_id, car in cars %}
+        <div class="car-card">
+            <div class="car-brand">{{ car.brand }}</div>
+            <div class="car-model">{{ car.model }}</div>
+            <div class="car-details">
+                <div class="car-year">📅 Year: {{ car.year }}</div>
+                <div class="car-price">💰 Price: ${{ "{:,.2f}".format(car.price) }}</div>
+                <div class="car-id">ID: {{ car_id }}</div>
+            </div>
+            <a href="/delete/{{ car_id }}" class="delete-btn" onclick="return confirm('Are you sure you want to delete this car?')">🗑️ Delete</a>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <h3>No cars in inventory</h3>
+        <p>Add your first car to get started!</p>
+    </div>
+{% endif %}
+{% endblock %}
