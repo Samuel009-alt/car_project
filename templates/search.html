@@ -5,49 +5,74 @@
 {% block content %}
 <style>
     h2 {
-        color: #667eea;
+        color: var(--primary);
         margin-bottom: 30px;
-        font-size: 2em;
+        font-size: 2.2em;
+        font-weight: 600;
+        position: relative;
+    }
+    
+    h2::after {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 4px;
+        background: var(--accent);
+        margin-top: 10px;
+        border-radius: 2px;
     }
     
     .search-container {
-        max-width: 800px;
-        margin: 0 auto 40px;
+        max-width: 900px;
+        margin: 0 auto 50px;
     }
     
     .search-tabs {
         display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
+        gap: 15px;
+        margin-bottom: 25px;
     }
     
     .tab-btn {
         flex: 1;
-        padding: 15px;
-        background: #f8f9fa;
-        border: 2px solid #ddd;
-        border-radius: 8px;
+        padding: 18px;
+        background: white;
+        border: 2px solid transparent;
+        border-radius: 12px;
         cursor: pointer;
-        font-size: 1.1em;
+        font-size: 1.05em;
         font-weight: 600;
         transition: all 0.3s;
+        color: #888;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        font-family: 'Poppins', sans-serif;
     }
     
     .tab-btn:hover {
-        background: #e9ecef;
+        color: var(--primary);
+        background: #fff;
+        transform: translateY(-2px);
     }
     
     .tab-btn.active {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: var(--primary);
         color: white;
-        border-color: #667eea;
+        box-shadow: 0 10px 20px rgba(19, 42, 58, 0.2);
     }
     
     .search-form {
         display: none;
-        background: #f8f9fa;
-        padding: 30px;
-        border-radius: 10px;
+        background: white;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border-top: 5px solid var(--accent);
+        animation: fadeIn 0.4s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
     
     .search-form.active {
@@ -55,87 +80,135 @@
     }
     
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
     
     label {
         display: block;
-        margin-bottom: 8px;
-        color: #333;
-        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary);
+        font-weight: 500;
     }
     
     input {
         width: 100%;
-        padding: 12px;
-        border: 2px solid #ddd;
-        border-radius: 8px;
+        padding: 15px;
+        border: 2px solid #eee;
+        border-radius: 10px;
         font-size: 1em;
+        transition: all 0.3s;
+        font-family: 'Poppins', sans-serif;
     }
     
     input:focus {
         outline: none;
-        border-color: #667eea;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px rgba(255, 110, 64, 0.1);
     }
     
     button {
         width: 100%;
-        padding: 15px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 18px;
+        background: var(--accent);
         color: white;
         border: none;
-        border-radius: 8px;
-        font-size: 1.2em;
+        border-radius: 10px;
+        font-size: 1.1em;
         font-weight: 600;
         cursor: pointer;
+        transition: all 0.3s;
+        font-family: 'Poppins', sans-serif;
     }
     
     button:hover {
+        background: #e65525;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 10px 20px rgba(255, 110, 64, 0.2);
     }
     
+    /* Results Grid - Matching Index Style */
     .results {
-        margin-top: 40px;
+        margin-top: 60px;
+        border-top: 1px solid #eee;
+        padding-top: 40px;
     }
     
     .car-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
     }
     
     .car-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 20px;
-        border-radius: 10px;
-        color: white;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        border-top: 5px solid var(--teal);
+        display: flex;
+        flex-direction: column;
     }
     
+    .car-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    
+    .card-header {
+        padding: 25px 25px 10px;
+    }
+
     .car-brand {
-        font-size: 1.5em;
-        font-weight: bold;
+        font-size: 1.4em;
+        font-weight: 700;
+        color: var(--primary);
         margin-bottom: 5px;
     }
     
     .car-model {
-        font-size: 1.2em;
-        margin-bottom: 10px;
-        opacity: 0.9;
+        font-size: 1.1em;
+        color: #666;
+        font-weight: 500;
     }
     
     .car-details {
+        padding: 0 25px 20px;
+        margin-top: auto;
+    }
+    
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin-top: 15px;
         padding-top: 15px;
-        border-top: 1px solid rgba(255,255,255,0.3);
+        border-top: 1px solid #eee;
+    }
+    
+    .car-year {
+        background: #eef2f5;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        color: var(--secondary);
+        font-weight: 600;
+    }
+    
+    .car-price {
+        font-size: 1.3em;
+        color: var(--accent);
+        font-weight: 700;
     }
     
     .no-results {
         text-align: center;
-        padding: 40px;
-        color: #666;
-        font-size: 1.2em;
+        padding: 60px;
+        color: #888;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
     }
 </style>
 
@@ -147,7 +220,7 @@
         <div class="tab-btn" onclick="showTab('year')">Filter by Year</div>
         <div class="tab-btn" onclick="showTab('price')">Filter by Price</div>
     </div>
-    
+
     <!-- Brand Search Form -->
     <form method="POST" class="search-form active" id="brand-form">
         <input type="hidden" name="search_type" value="brand">
@@ -155,19 +228,19 @@
             <label for="brand">Brand Name</label>
             <input type="text" id="brand" name="brand" placeholder="e.g., Toyota" required>
         </div>
-        <button type="submit">🔍 Search</button>
+        <button type="submit">🔍 Search Inventory</button>
     </form>
     
     <!-- Year Filter Form -->
     <form method="POST" class="search-form" id="year-form">
         <input type="hidden" name="search_type" value="year">
         <div class="form-group">
-            <label for="year">Year</label>
+            <label for="year">Manufacturing Year</label>
             <input type="number" id="year" name="year" placeholder="e.g., 2022" min="1900" max="2030" required>
         </div>
-        <button type="submit">🔍 Filter</button>
+        <button type="submit">🔍 Filter by Year</button>
     </form>
-    
+
     <!-- Price Filter Form -->
     <form method="POST" class="search-form" id="price-form">
         <input type="hidden" name="search_type" value="price">
@@ -179,7 +252,7 @@
             <label for="max_price">Maximum Price ($)</label>
             <input type="number" id="max_price" name="max_price" placeholder="e.g., 50000" step="0.01" required>
         </div>
-        <button type="submit">🔍 Filter</button>
+        <button type="submit">🔍 Filter by Price</button>
     </form>
 </div>
 
@@ -190,21 +263,24 @@
         <div class="car-grid">
             {% for car_id, car in results %}
             <div class="car-card">
-                <div class="car-brand">{{ car.brand }}</div>
-                <div class="car-model">{{ car.model }}</div>
+                <div class="card-header">
+                    <div class="car-brand">{{ car.brand }}</div>
+                    <div class="car-model">{{ car.model }}</div>
+                </div>
+                
                 <div class="car-details">
-                    <div>📅 Year: {{ car.year }}</div>
-                    <div>💰 Price: ${{ "{:,.2f}".format(car.price) }}</div>
-                    {% if car_id %}
-                    <div style="margin-top: 10px; opacity: 0.7;">ID: {{ car_id }}</div>
-                    {% endif %}
+                    <div class="info-row">
+                        <span class="car-year">{{ car.year }}</span>
+                        <span class="car-price">${{ "{:,.2f}".format(car.price) }}</span>
+                    </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     {% else %}
         <div class="no-results">
-            No cars found matching your search criteria.
+            <h3>No matches found</h3>
+            <p>Try adjusting your search criteria.</p>
         </div>
     {% endif %}
 </div>

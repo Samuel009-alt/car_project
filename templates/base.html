@@ -3,9 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Inventory - {% block title %}{% endblock %}</title>
+    <title>AutoManager - {% block title %}{% endblock %}</title>
 
+    <!-- Importing Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* Modern Teal & Orange Theme */
+            --primary: #132a3a;      /* Deep Teal/Navy */
+            --secondary: #1e3d59;    /* Ocean Blue */
+            --accent: #ff6e40;       /* Bright Orange */
+            --teal: #00d4aa;         /* Vibrant Teal */
+            --bg-body: #f4f7f6;      /* Clean Light Gray */
+            --text-dark: #2d3436;
+            --text-light: #ffffff;
+            --sidebar-width: 260px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,72 +27,273 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+           font-family: 'Poppins', sans-serif;
+           background-color: var(--bg-body);
+           color: var(--text-dark);
+           min-height: 100vh;
+           display: flex;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary);
+            color: var(--text-light);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
             padding: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        h1 {
-            color: #667eea;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        nav a {
-            display: inline-block;
-            padding: 12px 25px;
-            margin: 0 10px;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s;
+        .sidebar-header h1 {
+            font-size: 1.5rem;
             font-weight: 600;
+            color: var(--teal);
+            letter-spacing: 1px;
         }
 
-        nav a:hover {
-            background: #764ba2;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .nav-links {
+            list-style: none;
+            padding-top: 20px;
+            flex-grow: 1;
         }
 
-        .content {
-            padding: 20px 0;
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            padding: 16px 30px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+        }
+
+        .nav-links li a:hover, .nav-links li a.active {
+            background-color: rgba(255,255,255,0.05);
+            color: var(--text-light);
+            border-left-color: var(--accent);
+            padding-left: 35px; /* Slide effect */
+        }
+
+        .nav-icon {
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        /* --- Hamburger Button (Mobile) --- */
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-size: 1.2rem;
+        }
+
+        /* --- Main Content Area --- */
+        .main-content {
+            flex-grow: 1;
+            margin-left: var(--sidebar-width);
+            padding: 40px 60px;
+            transition: margin-left 0.3s ease;
+            width: 100%;
+        }
+
+        /* --- Overlay for Mobile --- */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 80px 20px 40px;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .overlay.active {
+                display: block;
+            }
+        }
+
+        /* --- Flash Messages --- */
+        .flash-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+
+        .flash-message {
+            padding: 15px 40px 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .flash-success {
+            background: #00d4aa;
+            color: white;
+        }
+
+        .flash-error {
+            background: #ff6e40;
+            color: white;
+        }
+
+        .flash-close {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            line-height: 1;
+        }
+
+        .flash-close:hover {
+            opacity: 0.7;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <h1>🚗 Car Inventory System</h1>
-            <nav>
-                <a href="/">Home</a>
-                <a href="/add">Add Car</a>
-                <a href="/search">Search</a>
-            </nav>
-        </header>
+    <!-- Hamburger Button -->
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
 
-        <div class="content">
-            {% block content %}{% endblock %}
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1>🚗 AutoManager</h1>
         </div>
-    </div>
+        <ul class="nav-links">
+            <li>
+                <a href="/" class="{% if request.path == '/' %}active{% endif %}">
+                    <span class="nav-icon">🏠</span> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="/add" class="{% if request.path == '/add' %}active{% endif %}">
+                    <span class="nav-icon">➕</span> Add New Car
+                </a>
+            </li>
+            <li>
+                <a href="/search" class="{% if request.path == '/search' %}active{% endif %}">
+                    <span class="nav-icon">🔍</span> Search Cars
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %} 
+            {% if messages %} 
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {{ message }}
+                            <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %} 
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        // Auto-dismiss flash messages after 4 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.animation = 'slideOut 0.3s ease forwards';
+                    setTimeout(function() {
+                        message.remove();
+                    }, 300);
+                }, 4000); // Show for 4 seconds
+            });
+        });
+    </script>
 </body>
 </html>

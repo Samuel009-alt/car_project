@@ -1,3 +1,6 @@
+# Environment Variables - NEVER COMMIT!
+.env
+
 # Python
 __pycache__/
 *.py[cod]

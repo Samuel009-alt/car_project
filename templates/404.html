@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}404 - Page Not Found{% endblock %}
+
+{% block content %}
+<style>
+    .error-container {
+        text-align: center;
+        padding: 80px 20px;
+        max-width: 600px;
+        margin: 100px auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .error-icon {
+        font-size: 8em;
+        margin-bottom: 20px;
+    }
+
+    .error-title {
+        font-size: 3em;
+        color: var(--primary);
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .error-message {
+        font-size: 1.2em;
+        color: #666;
+        margin-bottom: 30px;
+    }
+
+    .home-btn {
+        display: inline-block;
+        padding: 15px 40px;
+        background: var(--accent);
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .home-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(255, 110, 64, 0.2);   
+    }
+</style>
+
+<div class="error-container">
+    <div class="error-icon">🚗💨</div>
+    <h1 class="error-title">404</h1>
+    <p class="error-message">Oops! This page took a wrong turn.</p>
+    <a href="/" class="home-btn">🏠 Back to Dashboard</a>
+</div>
+{% endblock %}
