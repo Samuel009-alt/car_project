@@ -12,21 +12,27 @@ def show_menu():
     print("6. Delete a car")
     print("0. Exit")
     print("==============================")
+    
+def get_valid_number(prompt, type_func=float):
+    # Repeatedly prompt for a number until valid
+    while True:
+        value = input(prompt)
+        try:
+            return type_func(value)
+        except ValueError:
+            print(f"Invalid input. Please enter a valid {'integer' if type_func is int else 'number'}.")
 
 def add_car(db):
     # Get car details from user
     print("\n--- Add a New Car ---")
     brand = input("Brand: ")
     model = input("Model: ")
-    year = input("Year: ")
-    price = input("Price: ")
+    year = get_valid_number("Year: ", int)
+    price = get_valid_number("Price: ", float)
 
     # Validate and save 
-    try:
-        car = Car(brand, model, int(year), float(price))
-        db.add_car(car)
-    except ValueError:
-        print("Invalid year or price. Please enter valid values.")
+    car = Car(brand, model, year, price)
+    db.add_car(car)
 
 def view_all_cars(db):
     # Display all cars
@@ -52,39 +58,30 @@ def search_by_brand(db):
 def filter_by_year(db):
     # Filter cars by year 
     print("\n--- Filter Cars by Year ---")
-    year = input("Enter year: ")
+    year = get_valid_number("Enter year: ", int)
 
-    try:
-        year = int(year)
-        cars = db.get_all_cars()
-        filtered = [(car_id, car) for car_id, car in cars if car.year == year]
-        if not filtered:
-            print(f"No cars found from year {year}")
-            return
-        for car_id, car in filtered:
-            print(f"ID {car_id}: {car.get_info()}")
-    except ValueError:
-        print("Invalid year. Please enter a valid number.")
+    cars = db.get_all_cars()
+    filtered = [(car_id, car) for car_id, car in cars if car.year == year]
+    if not filtered:
+        print(f"No cars found from year {year}")
+        return
+    for car_id, car in filtered:
+        print(f"ID {car_id}: {car.get_info()}")
 
 def filter_by_price(db):
     # Filter cars by price range 
     print("\n--- Filter Cars by Price Range ---")
-    min_price = input("Enter minimum price: ")
-    max_price = input("Enter maximum price: ")
+    min_price = get_valid_number("Enter minimum price: ", float)
+    max_price = get_valid_number("Enter maximum price: ", float)
 
-    try:
-        min_price = float(min_price)
-        max_price = float(max_price)
-        cars = db.get_all_cars()
-        filtered = [(car_id, car) for car_id, car in cars if min_price <= car.price <= max_price]
+    cars = db.get_all_cars()
+    filtered = [(car_id, car) for car_id, car in cars if min_price <= car.price <= max_price]
 
-        if not filtered:
-            print(f"No cars found between ${min_price:,.2f} and ${max_price:,.2f}")
-            return
-        for car_id, car in filtered:
-            print(f"ID {car_id}: {car.get_info()}")
-    except ValueError:
-        print("Invalid price. Please enter valid numbers.")
+    if not filtered:
+        print(f"No cars found between ${min_price:,.2f} and ${max_price:,.2f}")
+        return
+    for car_id, car in filtered:
+        print(f"ID {car_id}: {car.get_info()}")
 
 def delete_car(db):
     # Delete a car by ID

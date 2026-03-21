@@ -6,7 +6,7 @@ def fetch_car_makes():
     url = "https://vpic.nhtsa.dot.gov/api/vehicles/getallmakes?format=json"
 
     try:
-        with urllib.request.urlopen(url) as response:
+        with urllib.request.urlopen(url, timeout=10) as response:
             data = json.loads(response.read().decode())
             makes = data["Results"][:10] # Get first 10 
             return makes
@@ -19,7 +19,7 @@ def fetch_models_by_make(make_name):
     url = f"https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/{make_name}?format=json"
     
     try:
-        with urllib.request.urlopen(url) as response:
+        with urllib.request.urlopen(url, timeout=10) as response:
             data = json.loads(response.read().decode())
             models = data["Results"][:5] # Get first 5
             return models

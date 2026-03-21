@@ -9,7 +9,7 @@ load_dotenv()
 
 # Create Flask app
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", 'fallback-dev-secret-key')
+app.secret_key = os.environ.get("SECRET_KEY", 'fallback-dev-secret-key')
 
 
 def get_db():
@@ -58,11 +58,16 @@ def add_car():
         # Get form data
         brand = request.form['brand']
         model = request.form['model']
-        year = int(request.form['year'])
-        price = float(request.form['price'])
-        
         # Create and save car
         db = get_db()
+        
+        try:
+            year = int(year)
+            price = float(price)
+        except ValueError:
+            flash('❌ Invalid input! Year and Price must be numbers.', 'error')
+            return render_template('add_car.html')
+
         car = Car(brand, model, year, price)
         db.add_car(car)
 
@@ -93,10 +98,15 @@ def edit_car(car_id):
         # Get form data
         brand = request.form['brand']
         model = request.form['model']
-        year = int(request.form['year'])
-        price = float(request.form['price'])
-
         # Update car in database
+        try:
+            year = int(year)
+            price = float(price)
+        except ValueError:
+            flash('❌ Invalid input! Year and Price must be numbers.', 'error')
+            # Fetch car again to re-render form with existing data
+            return redirect(url_for('edit_car', car_id=car_id))
+
         # First delete the old car
         db.delete_car(car_id)
         # Then add the updated car
